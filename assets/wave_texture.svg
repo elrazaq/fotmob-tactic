@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="waveGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.4"/>
+      <stop offset="50%" stop-color="#8B5CF6" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#EC4899" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="waveGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.35"/>
+      <stop offset="70%" stop-color="#EF4444" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#10B981" stop-opacity="0.1"/>
+    </linearGradient>
+    <pattern id="dotGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.5" fill="#FFFFFF" fill-opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <!-- Dot Grid Texture -->
+  <rect width="1920" height="1080" fill="url(#dotGrid)"/>
+
+  <!-- Flowing Wavy Ribbons (Layer 1) -->
+  <path d="M-100,250 C300,50 650,450 1100,200 C1550,-50 1800,350 2050,150 L2050,1150 L-100,1150 Z" 
+        fill="url(#waveGrad1)" opacity="0.35"/>
+
+  <!-- Flowing Wavy Ribbons (Layer 2) -->
+  <path d="M-50,650 C350,850 700,400 1200,600 C1700,800 1900,450 2100,750 L2100,1150 L-50,1150 Z" 
+        fill="url(#waveGrad2)" opacity="0.3"/>
+
+  <!-- Subtle Contour Lines -->
+  <path d="M-100,250 C300,50 650,450 1100,200 C1550,-50 1800,350 2050,150" 
+        fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.35" stroke-dasharray="8 6"/>
+
+  <path d="M-80,290 C320,90 670,490 1120,240 C1570,-10 1820,390 2070,190" 
+        fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-opacity="0.3"/>
+
+  <path d="M-50,650 C350,850 700,400 1200,600 C1700,800 1900,450 2100,750" 
+        fill="none" stroke="#38BDF8" stroke-width="2" stroke-opacity="0.4"/>
+
+  <path d="M-30,690 C370,890 720,440 1220,640 C1720,840 1920,490 2120,790" 
+        fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.25" stroke-dasharray="4 4"/>
+</svg>

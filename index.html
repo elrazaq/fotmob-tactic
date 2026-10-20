@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PROTOTYPE FOTMOB TACTIC // Ver. 1.0</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- GSAP for Motion Graphics -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  
+  <!-- html2canvas for Real High-Res Frame Capture -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Custom Signature Theme Styling -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col lg:flex-row overflow-x-hidden">
+
+  <!-- LEFT COLUMN: CONTROL SIDEBAR (Signature Luxury Broadcast Theme) -->
+  <aside class="w-full lg:w-[380px] xl:w-[410px] sidebar-panel p-5 flex flex-col gap-4 flex-shrink-0 z-20">
+    
+    <!-- STUDIO BRAND HEADER -->
+    <div class="flex items-center justify-between pb-3 border-b border-white/10">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-red-600 to-[#9C0006] flex items-center justify-center shadow-lg shadow-red-900/50 border border-white/20">
+          <i data-lucide="tv-2" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <h1 class="text-base font-black tracking-tight font-display text-white">PROTOTYPE <span class="text-[#F59E0B]">FOTMOB TACTIC</span></h1>
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-[10px] text-slate-300 font-bold uppercase tracking-wider">Ver. 1.0 • Pundit Studio</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODE SWITCHER: PREDIKSI VS REVIEW -->
+    <div>
+      <div class="text-[11px] font-bold text-slate-300 mb-1.5 flex items-center justify-between">
+        <span>Tipe Konten Siaran</span>
+        <span class="text-amber-400 text-[10px]" id="lblActiveMode">Mode Prediksi Aktif</span>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <button id="btnModePrediction" class="btn-mode active flex items-center justify-center gap-1.5">
+          <i data-lucide="wand-2" class="w-3.5 h-3.5 text-amber-300"></i>
+          <span>Mode Prediksi</span>
+        </button>
+        <button id="btnModeReview" class="btn-mode flex items-center justify-center gap-1.5">
+          <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span>Mode Review Laga</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 1. LINK PERTANDINGAN FOTMOB -->
+    <div>
+      <div class="flex items-center justify-between mb-1.5">
+        <h2 class="text-xs font-bold text-slate-300">1. Link Pertandingan FotMob</h2>
+        <span class="text-[10px] font-bold text-emerald-400">Proxy Ready</span>
+      </div>
+
+      <!-- Quick Preset Matches Pills (Includes Manchester Derby) -->
+      <div class="flex flex-wrap gap-1.5 mb-2">
+        <button id="btnPresetDerby" class="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-red-950/80 text-rose-300 border border-red-700/50 hover:bg-red-900 transition flex items-center gap-1">
+          <span>🔴 Man City vs Man Utd 🔵</span>
+        </button>
+        <button id="btnPresetSpain" class="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition">
+          🇪🇸 Spanyol vs Kroasia 🇭🇷
+        </button>
+        <button id="btnPresetArsenal" class="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-red-950/80 text-red-300 border border-red-700/50 hover:bg-red-900 transition">
+          🔴 Arsenal vs Brighton 🔵
+        </button>
+      </div>
+
+      <div class="flex gap-2">
+        <input 
+          type="text" 
+          id="fotmobUrl" 
+          value="https://www.fotmob.com/matches/manchester-city-vs-manchester-united/2wabz2#5795452" 
+          placeholder="https://www.fotmob.com/matches/..."
+          class="control-input flex-1 text-xs">
+        <button id="btnFetchAuto" class="bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white font-bold text-xs px-3 py-2 rounded-lg shadow transition whitespace-nowrap">
+          Ambil Data
+        </button>
+      </div>
+
+      <p class="text-[11px] text-emerald-400 font-medium mt-1 leading-tight">
+        Terisi: Statistik Match, Line Up Tim A, Line Up Tim B, Line Up AB, Jadwal Pertandingan, Daftar Skuad, Klasemen
+      </p>
+    </div>
+
+    <!-- 2. PILIH TAB (8 Menu Tombol) -->
+    <div>
+      <h2 class="text-xs font-bold text-slate-300 mb-1.5">2. Pilih Tab Konten</h2>
+      <div class="grid grid-cols-2 gap-2" id="tabGroup">
+        <button class="tab-btn" data-tab="stats">Statistik Match</button>
+        <button class="tab-btn" data-tab="lineupA">Line Up Tim A</button>
+        <button class="tab-btn" data-tab="lineupB">Line Up Tim B</button>
+        <button class="tab-btn active" data-tab="lineupAB">Line Up AB (Bersanding)</button>
+        <button class="tab-btn" data-tab="schedule">Jadwal Pertandingan</button>
+        <button class="tab-btn" data-tab="squad">Daftar Skuad (Lengkap)</button>
+        <button class="tab-btn" data-tab="table">Klasemen</button>
+        <button class="tab-btn" data-tab="other">Lainnya</button>
+      </div>
+    </div>
+
+    <!-- 3. RACIK FORMASI & GESER MASAL -->
+    <div class="border-t border-white/10 pt-3">
+      <div class="flex items-center justify-between mb-1.5">
+        <h2 class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+          <i data-lucide="layout-grid" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>3. Racik Formasi & Geser</span>
+        </h2>
+        <span class="text-[10px] text-emerald-400 font-mono">Drag & Drop Aktif</span>
+      </div>
+
+      <div class="space-y-2">
+        <div class="flex gap-2">
+          <select id="formationSelect" class="control-input flex-1 bg-black/60 font-bold text-white text-xs">
+            <option value="4-3-3">Formasi 4-3-3 (Attack)</option>
+            <option value="4-2-3-1">Formasi 4-2-3-1 (Modern Standard)</option>
+            <option value="3-4-2-1">Formasi 3-4-2-1 (Xabi Alonso Style)</option>
+            <option value="3-5-2">Formasi 3-5-2 (Double Striker)</option>
+            <option value="4-4-2">Formasi 4-4-2 (Flat)</option>
+            <option value="5-3-2">Formasi 5-3-2 (Defensive Counter)</option>
+            <option value="4-1-4-1">Formasi 4-1-4-1 (Holding Pivot)</option>
+            <option value="3-4-3">Formasi 3-4-3 (Wide Attack)</option>
+            <option value="5-2-3">Formasi 5-2-3 (Wingback High)</option>
+          </select>
+          <button id="btnApplyFormation" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs rounded-lg transition" title="Terapkan formasi ke pemain">
+            Auto-Map
+          </button>
+        </div>
+
+        <!-- Geser Masal D-PAD -->
+        <div class="p-2 rounded-xl bg-white/5 border border-white/10 space-y-1.5">
+          <div class="flex items-center justify-between text-[11px] text-slate-300 font-bold">
+            <span>Geser Formasi Masal</span>
+            <button id="btnResetPositions" class="text-[10px] text-rose-400 hover:underline">Reset Posisi</button>
+          </div>
+          <div class="flex items-center justify-center gap-2">
+            <button id="btnShiftLeft" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded text-xs font-bold">◀ Kiri</button>
+            <button id="btnShiftUp" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded text-xs font-bold">▲ Atas</button>
+            <button id="btnShiftDown" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded text-xs font-bold">▼ Bawah</button>
+            <button id="btnShiftRight" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded text-xs font-bold">Kanan ▶</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. PENGATURAN DURASI & FADE IN / FADE OUT -->
+    <div class="border-t border-white/10 pt-3">
+      <h2 class="text-xs font-bold text-slate-300 mb-2 flex items-center justify-between">
+        <span>4. Pengaturan Fade In & Fade Out</span>
+        <i data-lucide="sliders" class="w-3.5 h-3.5 text-amber-400"></i>
+      </h2>
+
+      <div class="space-y-2 text-xs">
+        <div class="flex items-center justify-between">
+          <label class="text-[11px] text-slate-400">Total Durasi Video (detik)</label>
+          <input type="number" id="videoDurationInput" min="5" max="60" step="1" value="15" class="control-input w-20 text-center font-bold text-amber-400">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] text-slate-400 block mb-0.5">Fade In Mulai (s)</label>
+            <input type="number" id="inTimeInput" min="0" max="30" step="0.5" value="1.5" class="control-input w-full text-center">
+          </div>
+          <div>
+            <label class="text-[10px] text-slate-400 block mb-0.5">Fade Out Mulai (s)</label>
+            <input type="number" id="outTimeInput" min="1" max="60" step="0.5" value="12.0" class="control-input w-full text-center">
+          </div>
+        </div>
+
+        <!-- Card Theme Picker -->
+        <div>
+          <label class="text-[10px] text-slate-400 block mb-0.5">Tema Background Card</label>
+          <select id="cardThemeSelect" class="control-input w-full bg-black/60 text-xs">
+            <option value="theme-obsidian">Obsidian Dark Glass (Standar)</option>
+            <option value="theme-emerald">Emerald Pitch Glow (Hijau Lapangan)</option>
+            <option value="theme-navy">Midnight Navy Luxury (Biru Malam)</option>
+            <option value="theme-crimson">Pundit Crimson Carbon (Merah Studio)</option>
+            <option value="theme-bronze">Champagne Gold Luxury (Emas Mewah)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. TOMBOL EXPORT VIDEO (.MOV) -->
+    <div class="border-t border-white/10 pt-3 mt-auto">
+      <button id="btnExportMov" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-black text-xs py-2.5 rounded-xl shadow-lg shadow-amber-500/30 transition flex items-center justify-center gap-2">
+        <i data-lucide="download" class="w-4 h-4"></i>
+        <span>EXPORT VIDEO (.MOV)</span>
+      </button>
+      <p class="text-[10px] text-slate-400 text-center mt-1">Render video broadcast nyata resolusi 1080p</p>
+    </div>
+
+  </aside>
+
+  <!-- RIGHT COLUMN: GRAPHIC & VIDEO TEMPLATE CANVAS STAGE -->
+  <main class="flex-1 flex flex-col items-center justify-center p-3 lg:p-6 stage-container relative min-h-[640px]">
+    
+    <!-- SYSTEM TEMPLATE DISPLAY (Canvas Resolusi Broadcast 16:9) -->
+    <div id="broadcastCanvas" class="relative w-full max-w-[1100px] aspect-video rounded-2xl border border-white/20 shadow-2xl flex flex-col p-5 lg:p-7 select-none">
+      
+      <!-- LAYER 1: TEXTURED FLOWING WAVY BACKGROUND (Faster Animation) -->
+      <div class="wavy-layer" id="waveLayer"></div>
+
+      <!-- LAYER 2: VIDEO TRANSITION BLACKOUT -->
+      <div id="videoTransitionOverlay"></div>
+
+      <!-- TOP DYNAMIC HEADER -->
+      <header class="relative z-10 flex items-start justify-between mb-2">
+        <div>
+          <h1 id="mainTitleHeader" class="text-4xl lg:text-5xl font-black font-headline text-white leading-none tracking-wider drop-shadow-lg">
+            PREDIKSI LINE UP
+          </h1>
+          <h2 id="vsOpponentHeader" class="text-2xl lg:text-3xl font-black font-headline text-[#F59E0B] tracking-wider mt-0.5 drop-shadow">
+            VS MANCHESTER UNITED
+          </h2>
+        </div>
+
+        <!-- Tournament Info Badge -->
+        <div class="flex items-center gap-3 bg-black/75 backdrop-blur-md px-4 py-2 rounded-xl border border-white/15 shadow-xl">
+          <img id="activeTeamHeaderLogo" src="" alt="Club Logo" class="w-8 h-8 object-contain">
+          <div class="text-right">
+            <div id="matchTournamentName" class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Premier League</div>
+            <div id="matchFormationName" class="text-xs font-black text-white font-headline">MANCHESTER CITY (4-3-3)</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT STAGE (DYNAMIC BY TAB) -->
+      <div id="stageContent" class="relative z-10 flex-1 flex gap-5 items-stretch overflow-hidden">
+        
+        <!-- SECTION A: TACTICAL PITCH AREA -->
+        <div class="flex-1 h-full pitch-board relative" id="pitchArea">
+          
+          <!-- Pitch Markings Group (Vertical vs Horizontal) -->
+          <div id="pitchLinesGroup" class="absolute inset-0 pitch-horizontal pointer-events-none">
+            <div class="pitch-mid-line pitch-line"></div>
+            <div class="pitch-center-circle pitch-line"></div>
+            <div class="pitch-penalty-primary pitch-line"></div>
+            <div class="pitch-penalty-secondary pitch-line"></div>
+          </div>
+
+          <!-- Draggable Player Nodes Layer -->
+          <div id="tacticalPlayersContainer" class="absolute inset-0 pointer-events-auto">
+            <!-- Dynamically populated via app.js -->
+          </div>
+        </div>
+
+        <!-- SECTION B: SPOTLIGHT CARD (Player/Coach Spotlight) -->
+        <div class="spotlight-card flex-shrink-0" id="spotlightCard">
+          
+          <div class="spotlight-photo-frame" id="spotlightPhotoFrame" style="background-color: var(--team-primary-color);">
+            <img id="spotlightPhoto" src="" alt="Photo" class="spotlight-photo">
+          </div>
+
+          <div class="spotlight-info-bar">
+            <img id="spotlightCrest" src="" alt="Crest" class="spotlight-crest">
+            <div class="overflow-hidden">
+              <div id="spotlightName" class="spotlight-name truncate">ERLING HAALAND</div>
+              <div id="spotlightRole" class="spotlight-role truncate">MAN CITY • STARTER XI</div>
+            </div>
+          </div>
+
+          <div class="spotlight-bottom-panel" id="spotlightBottomPanel">
+            <div class="spotlight-bottom-header" id="spotlightBottomHeader">DETAIL PROFIL</div>
+            <div id="spotlightBottomContent" class="space-y-1.5 text-slate-300">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- YOUTUBE-STYLE VIDEO TRANSPORT & SCRUBBER BAR -->
+    <div class="youtube-player-bar z-10">
+      
+      <!-- Scrubber Track with Fill -->
+      <div class="progress-track" id="ytProgressTrack">
+        <div class="progress-fill" id="ytProgressFill"></div>
+      </div>
+
+      <!-- Controls Row -->
+      <div class="flex items-center justify-between text-xs pt-1">
+        
+        <div class="flex items-center gap-3">
+          <button id="btnYtPlay" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition text-white">
+            <i data-lucide="play" id="ytPlayIcon" class="w-4 h-4 text-emerald-400"></i>
+          </button>
+          
+          <button id="btnYtReplay" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition text-slate-300" title="Replay Video">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          </button>
+
+          <!-- Duration Text -->
+          <div class="font-mono text-slate-200 text-xs flex items-center gap-1">
+            <span id="ytCurrentTime">00:00.00</span>
+            <span class="text-slate-500">/</span>
+            <span id="ytDuration" class="text-slate-400">00:15.00</span>
+          </div>
+        </div>
+
+        <!-- Video Transition Indicators -->
+        <div class="hidden sm:flex items-center gap-4 text-[11px] text-slate-300">
+          <span class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            Fade In: <strong id="lblInTime" class="text-white">1.5s</strong>
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+            Fade Out: <strong id="lblOutTime" class="text-white">12.0s</strong>
+          </span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Playback Speed -->
+          <select id="ytSpeedSelect" class="bg-black/50 border border-white/10 rounded px-2 py-0.5 text-[11px] text-slate-300">
+            <option value="1">1.0x</option>
+            <option value="1.25">1.25x</option>
+            <option value="1.5">1.5x</option>
+          </select>
+
+          <!-- Bar Export Button -->
+          <button id="btnBarExport" class="px-3 py-1 rounded bg-amber-500 hover:bg-amber-400 text-black font-bold text-[11px] flex items-center gap-1 transition">
+            <i data-lucide="download" class="w-3 h-3"></i>
+            <span>Export .MOV</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- EXPORT PROGRESS MODAL -->
+  <div id="exportModal" class="export-modal hidden">
+    <div class="bg-[#121620] border border-amber-500/40 rounded-2xl p-6 w-[380px] text-center shadow-2xl space-y-4">
+      <div class="w-14 h-14 rounded-full bg-amber-500/20 border border-amber-500/50 flex items-center justify-center mx-auto text-amber-400 animate-spin">
+        <i data-lucide="film" class="w-7 h-7"></i>
+      </div>
+      <div>
+        <h3 class="text-lg font-black font-headline text-white">MENGEKSPOR VIDEO (.MOV)</h3>
+        <p class="text-xs text-slate-400 mt-1">Merekam canvas grafis & meng-encode video stream...</p>
+      </div>
+      <!-- Progress Bar -->
+      <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden border border-white/10">
+        <div id="exportProgressBar" class="h-full bg-gradient-to-r from-amber-500 to-emerald-500 w-0 transition-all duration-300"></div>
+      </div>
+      <div id="exportStatusText" class="text-xs font-mono text-amber-400">Menyiapkan frame...</div>
+    </div>
+  </div>
+
+  <!-- HIDDEN RECORDING CANVAS (For True Video Export) -->
+  <canvas id="exportCanvas" width="1280" height="720" class="hidden"></canvas>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script src="presets.js"></script>
+  <script src="app.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
